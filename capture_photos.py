@@ -29,10 +29,23 @@ class VideoTransformer(VideoTransformerBase):
 def main():
     st.title("Mobile Camera Capture")
 
+    # Check for mobile device
+    user_agent = st.sidebar.text_input("User Agent (for mobile detection)", value=st.session_state.get('user_agent', ""))
+    st.session_state['user_agent'] = user_agent
+
+    # Use the rear camera if the device is a mobile phone
+    if "Mobile" in user_agent:
+        video_constraints = {
+            "facingMode": {"exact": "environment"}  # Use rear camera
+        }
+    else:
+        video_constraints = None  # Default to the front camera or no constraints
+
     webrtc_ctx = webrtc_streamer(
         key="example",
         video_transformer_factory=VideoTransformer,
         async_transform=True,
+        video_constraints=video_constraints
     )
 
     if st.button("Capture Photo"):
