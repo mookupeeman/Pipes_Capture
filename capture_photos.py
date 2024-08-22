@@ -11,7 +11,7 @@ from googleapiclient.http import MediaIoBaseUpload
 
 # Google Drive API settings
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
-SERVICE_ACCOUNT_FILE = '/data/files/SL2/Pipes_Capture-main/capture-image-pipes-88a9648d1cc4.json'  # Path to your service account key file
+SERVICE_ACCOUNT_FILE = 'capture-image-pipes-88a9648d1cc4.json'  # Path to your service account key file
 
 def authenticate_google_drive():
     credentials = service_account.Credentials.from_service_account_file(
