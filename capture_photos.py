@@ -1,36 +1,63 @@
 import streamlit as st
 import cv2
 import numpy as np
-from datetime import datetime
-import base64
 from io import BytesIO
 from PIL import Image
+import base64
 
 def main():
     st.title("Mobile Camera Capture")
 
-    # Custom CSS for fullscreen camera input
+    # Full-screen camera input using HTML and JavaScript
     st.markdown(
         """
         <style>
-        .css-1r7b0x2 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        #videoElement {
             width: 100vw;
+            height: 100vh;
+            object-fit: cover;
         }
         </style>
+
+        <video id="videoElement" autoplay></video>
+        <button id="capture">Capture</button>
+
+        <script>
+        (function() {
+            const videoElement = document.getElementById('videoElement');
+            const captureButton = document.getElementById('capture');
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                .then(stream => {
+                    videoElement.srcObject = stream;
+                });
+
+            captureButton.addEventListener('click', () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                const dataURL = canvas.toDataURL('image/jpeg');
+                const img = document.createElement('img');
+                img.src = dataURL;
+                document.body.appendChild(img);
+
+                window.streamlitPythonCallback(dataURL);
+            });
+        })();
+        </script>
         """,
-        unsafe_allow_html=True,
+        unsafe_allow_html=True
     )
 
-    # Use Streamlit's camera input
-    img_file_buffer = st.camera_input("Take a picture")
+    # Listen to the captured image
+    captured_image = st.experimental_js_listen("window.streamlitPythonCallback")
 
-    if img_file_buffer is not None:
-        # Read the image file buffer with PIL
-        image = Image.open(img_file_buffer)
+    if captured_image:
+        # Decode the base64 image
+        image = Image.open(BytesIO(base64.b64decode(captured_image.split(",")[1])))
 
         # Convert PIL Image to numpy array
         img_array = np.array(image)
