@@ -1,63 +1,58 @@
 import streamlit as st
 import cv2
 import numpy as np
+from datetime import datetime
+import base64
 from io import BytesIO
 from PIL import Image
-import base64
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+
+# Google Drive API settings
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
+SERVICE_ACCOUNT_FILE = '/data/files/SL2/Pipes_Capture-main/capture-image-pipes-88a9648d1cc4.json'  # Path to your service account key file
+
+def authenticate_google_drive():
+    credentials = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    service = build('drive', 'v3', credentials=credentials)
+    return service
+
+def upload_to_drive(service, file_name, file_data, folder_id):
+    file_metadata = {
+        'name': file_name,
+        'parents': [folder_id]
+    }
+    media = MediaIoBaseUpload(file_data, mimetype='image/jpeg')
+    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+    return file.get('id')
 
 def main():
     st.title("Mobile Camera Capture")
 
-    # Full-screen camera input using HTML and JavaScript
+    # Custom CSS for fullscreen camera input
     st.markdown(
         """
         <style>
-        #videoElement {
-            width: 100vw;
+        .css-1r7b0x2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-            object-fit: cover;
+            width: 100vw;
         }
         </style>
-
-        <video id="videoElement" autoplay></video>
-        <button id="capture">Capture</button>
-
-        <script>
-        (function() {
-            const videoElement = document.getElementById('videoElement');
-            const captureButton = document.getElementById('capture');
-
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-                .then(stream => {
-                    videoElement.srcObject = stream;
-                });
-
-            captureButton.addEventListener('click', () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
-                const context = canvas.getContext('2d');
-                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-                const dataURL = canvas.toDataURL('image/jpeg');
-                const img = document.createElement('img');
-                img.src = dataURL;
-                document.body.appendChild(img);
-
-                window.streamlitPythonCallback(dataURL);
-            });
-        })();
-        </script>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
-    # Listen to the captured image
-    captured_image = st.experimental_js_listen("window.streamlitPythonCallback")
+    # Use Streamlit's camera input
+    img_file_buffer = st.camera_input("Take a picture")
 
-    if captured_image:
-        # Decode the base64 image
-        image = Image.open(BytesIO(base64.b64decode(captured_image.split(",")[1])))
+    if img_file_buffer is not None:
+        # Read the image file buffer with PIL
+        image = Image.open(img_file_buffer)
 
         # Convert PIL Image to numpy array
         img_array = np.array(image)
@@ -84,9 +79,20 @@ def main():
         # Display the image with the rectangle
         st.image(img_rgb, caption="Captured Photo with Rectangle", use_column_width=True)
 
-        # Create a download button for the original image
+        # Convert image to JPEG and prepare it for upload
         buffered = BytesIO()
         Image.fromarray(cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)).save(buffered, format="JPEG")
+        buffered.seek(0)
+
+        # Authenticate and upload to Google Drive
+        service = authenticate_google_drive()
+        folder_id = '1CcmHTorJysPzSj1ghEPjO2oOnRrK_BuI'  # Replace with your Google Drive folder ID
+        file_name = f'captured_image_{datetime.now().strftime("%Y%m%d_%H%M%S")}.jpg'
+        file_id = upload_to_drive(service, file_name, buffered, folder_id)
+
+        st.success(f"Image uploaded to Google Drive with file ID: {file_id}")
+
+        # Create a download button for the original image
         img_str = base64.b64encode(buffered.getvalue()).decode()
         href = f'<a href="data:file/jpg;base64,{img_str}" download="captured_image.jpg">Download Captured Image</a>'
         st.markdown(href, unsafe_allow_html=True)
