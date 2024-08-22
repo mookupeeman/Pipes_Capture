@@ -1,59 +1,53 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
-import av
 import cv2
 import numpy as np
 from datetime import datetime
 import base64
-
-class VideoTransformer(VideoTransformerBase):
-    def __init__(self):
-        self.rect_width = 200
-        self.rect_height = 200
-        self.last_frame = None
-
-    def transform(self, frame):
-        img = frame.to_ndarray(format="bgr24")
-
-        # Store the last frame
-        self.last_frame = img.copy()
-
-        # Draw centered rectangle on the frame
-        frame_height, frame_width = img.shape[:2]
-        top_left = (frame_width // 2 - self.rect_width // 2, frame_height // 2 - self.rect_height // 2)
-        bottom_right = (frame_width // 2 + self.rect_width // 2, frame_height // 2 + self.rect_height // 2)
-        cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 2)
-
-        return img
+from io import BytesIO
+from PIL import Image
 
 def main():
     st.title("Mobile Camera Capture")
 
-    webrtc_ctx = webrtc_streamer(
-        key="example",
-        video_transformer_factory=VideoTransformer,
-        async_transform=True,
-    )
+    # Use Streamlit's camera input
+    img_file_buffer = st.camera_input("Take a picture")
 
-    if st.button("Capture Photo"):
-        if webrtc_ctx.video_transformer:
-            if webrtc_ctx.video_transformer.last_frame is not None:
-                img = webrtc_ctx.video_transformer.last_frame
+    if img_file_buffer is not None:
+        # Read the image file buffer with PIL
+        image = Image.open(img_file_buffer)
 
-                # Convert the image to JPEG
-                _, buffer = cv2.imencode('.jpg', img)
+        # Convert PIL Image to numpy array
+        img_array = np.array(image)
 
-                # Convert to base64 for download
-                b64_image = base64.b64encode(buffer).decode('utf-8')
+        # Convert the image from RGB to BGR (OpenCV uses BGR)
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
 
-                # Create download link
-                href = f'<a href="data:image/jpeg;base64,{b64_image}" download="captured_image.jpg">Click here to download the captured image</a>'
-                st.markdown(href, unsafe_allow_html=True)
+        # Get image dimensions
+        height, width = img_array.shape[:2]
 
-                # Display the captured image
-                st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), caption="Captured Photo")
-            else:
-                st.error("No frame available. Please make sure your camera is working and visible in the stream.")
+        # Define rectangle dimensions
+        rect_width = 200
+        rect_height = 200
+
+        # Calculate rectangle coordinates
+        top_left = (width // 2 - rect_width // 2, height // 2 - rect_height // 2)
+        bottom_right = (width // 2 + rect_width // 2, height // 2 + rect_height // 2)
+
+        # Draw rectangle on the image
+        cv2.rectangle(img_array, top_left, bottom_right, (0, 255, 0), 2)
+
+        # Convert back to RGB for displaying
+        img_rgb = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
+
+        # Display the image with the rectangle
+        st.image(img_rgb, caption="Captured Photo with Rectangle", use_column_width=True)
+
+        # Create a download button for the original image
+        buffered = BytesIO()
+        Image.fromarray(cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)).save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue()).decode()
+        href = f'<a href="data:file/jpg;base64,{img_str}" download="captured_image.jpg">Download Captured Image</a>'
+        st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
