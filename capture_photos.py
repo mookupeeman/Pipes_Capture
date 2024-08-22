@@ -26,7 +26,7 @@ def main():
         height, width = img_array.shape[:2]
 
         # Define rectangle dimensions
-        rect_width = int(width * 0.6)
+        rect_width = width
         rect_height = int(height * 0.6)
 
         # Calculate rectangle coordinates
