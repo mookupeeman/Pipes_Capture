@@ -9,6 +9,22 @@ from PIL import Image
 def main():
     st.title("Mobile Camera Capture")
 
+    # Custom CSS for fullscreen camera input
+    st.markdown(
+        """
+        <style>
+        .css-1r7b0x2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     # Use Streamlit's camera input
     img_file_buffer = st.camera_input("Take a picture")
 
@@ -25,8 +41,7 @@ def main():
         # Get image dimensions
         height, width = img_array.shape[:2]
 
-        # Define rectangle dimensions
-        rect_width = int(width*0.8)
+        rect_width = int(width * 0.8)
         rect_height = int(height * 0.8)
 
         # Calculate rectangle coordinates
