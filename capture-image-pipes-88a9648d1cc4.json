@@ -1,13 +1,1 @@
-{
-  "type": "service_account",
-  "project_id": "capture-image-pipes",
-  "private_key_id": "88a9648d1cc47726e1b2ddfa6ba80e4d48069b0c",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC06xin/ejMaksS\now1yNgHLeOYRHVfRtfbiGiI2k1UgS573RFxw3ykYS6fXmk/DswLKfLrLUxOYEnII\nG08efRSNyqzVqMBbdr2SBSZ1ibOxDzTzL4UEbRRE+f2I95g26wdc59/hobSJFlWK\nvqeIc1XO2t/OxeA0ACQ/aYUKyI9cSBcvzsPpiNGY6hKAdC6mvLWSX4w1sJ9+rgUj\nqAQu7kiP7MMcXnmsIQRYt968pzJOadncpgtWh/H3q36lOsbphZZmPJRjvQGFSvbQ\ncxvPYuLholtTwWvapixxt5cFCHjNtP0eXJsN3YuRC/x2pjuRphdcriDtffVmILqM\nZJmdSyw/AgMBAAECggEAM1hLaZXqhWUfRD1JOiIwtTXtGWtZ+pbpZ7biAdojfSRp\nC6T3lUMITzBdhJdzTseVobDvdHfx5iVJ/pn9hNobxLgCACtB2FNlLrVOemonuLbn\noKLaXey1JXRLa51VMjTWpJvcEpWJfqR7h4JfWp7c+fVtMio/XJKzttl0HCDaauZB\nhB/IFMa2T71T9ag8GnmeyD068mYdwk/CA14tzghUZ4kBX5ei9wc1meo9H4UcTRCi\nLtZfr3ahSyH5nQBaD+ri7f0fKM3NW3bWUNMW+AqiQrxWs7HvN28jReuT+XopXcco\nLD0DDpAfq1D3u20cQxvXMfzpf3eGrl2PxkVxuZeCeQKBgQD2YHOc9sys151gULy2\n7Md5MV4em0bSmu5U3gXmUWSC381qCqnkXxQT1CLhEBARMkkzBnInxauRlU/ev0o/\nkc6aIQNN7coYWOmgp1w4KLYnCgjVkEFVFCt9RS/sRmeVIAo38c47WC0//SLb3bSm\nSD3lDkIXRAJsf6ZvmDFuJMXTFwKBgQC7/B5nGbsMUzGui8s8Xfio1TMSVyfSQ/Ge\ng9RMEU1Qx6/1avatHfLJWClX99V5mFG+ah8gO2rq+axttXM8X9RKaolmM3vkl92z\n13blChbehZt4kE+UYrpfmsQwGfhaiV8f/vmI6uPiu5b/fXPgLDEhVL65WhQsY2pU\n69QW5nhJGQKBgQDq7+KPRRC7qQebNqId1QAJ4zea+/q3DaJDL0x06hxsaDma6vxC\nlx+wINP5xbVskIUYsQbeQjJuqvD0uXh10fYvJ1fdUekq+m4eEjlwG/JGm9z8uYhz\nNr6ZwAYIysIvg9P6sQw1rsnHgP1ip7GB9tV+vO/s+59MExWEyJ4qJ8q0lQKBgE3y\nugyYT8ZJjPVKhChw8tXXKck2GI4InFzVXyd3mS6gzqaeBtE79NtmUiZm3r7/2Q1y\n5Zsw6CGtC8GmFrV3Kwj8aiLVwE7GZijXdDZ+24LDtfblKApocc2I2Eb1zdSE18vl\np0UN2RbAIFmqhGz1Bh5DDJ7A6lKJmqLB8vzX7hKpAoGBAIQthzvhvoHs8dVhEo13\nWlL7hHDtgLXkco1TydAAby5wBhptC0o8VpRD99czfG5SfA5DK3IwH/zqIUSCc6Zz\nhi0CVC2V8AJLoeb9D+4ik02Fxdj68JNNjEe365fjurjV422M39DIvPyOVoHGq0/F\n0o2cGNvvDR3yND0D6NNiRlK6\n-----END PRIVATE KEY-----\n",
-  "client_email": "prince-pipes-capture@capture-image-pipes.iam.gserviceaccount.com",
-  "client_id": "104669565562752272829",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/prince-pipes-capture%40capture-image-pipes.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
+
