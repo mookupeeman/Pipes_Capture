@@ -10,23 +10,23 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
 
 # Google Drive API settings
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
-SERVICE_ACCOUNT_FILE = 'capture-image-pipes-88a9648d1cc4.json'  # Path to your service account key file
+# SCOPES = ['https://www.googleapis.com/auth/drive.file']
+# SERVICE_ACCOUNT_FILE = 'capture-image-pipes-88a9648d1cc4.json'  # Path to your service account key file
 
-def authenticate_google_drive():
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    service = build('drive', 'v3', credentials=credentials)
-    return service
+# def authenticate_google_drive():
+#     credentials = service_account.Credentials.from_service_account_file(
+#         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+#     service = build('drive', 'v3', credentials=credentials)
+#     return service
 
-def upload_to_drive(service, file_name, file_data, folder_id):
-    file_metadata = {
-        'name': file_name,
-        'parents': [folder_id]
-    }
-    media = MediaIoBaseUpload(file_data, mimetype='image/jpeg')
-    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    return file.get('id')
+# def upload_to_drive(service, file_name, file_data, folder_id):
+#     file_metadata = {
+#         'name': file_name,
+#         'parents': [folder_id]
+#     }
+#     media = MediaIoBaseUpload(file_data, mimetype='image/jpeg')
+#     file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+#     return file.get('id')
 
 def main():
     st.title("Mobile Camera Capture")
@@ -84,13 +84,13 @@ def main():
         Image.fromarray(cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)).save(buffered, format="JPEG")
         buffered.seek(0)
 
-        # Authenticate and upload to Google Drive
-        service = authenticate_google_drive()
-        folder_id = '1CcmHTorJysPzSj1ghEPjO2oOnRrK_BuI'  # Replace with your Google Drive folder ID
-        file_name = f'captured_image_{datetime.now().strftime("%Y%m%d_%H%M%S")}.jpg'
-        file_id = upload_to_drive(service, file_name, buffered, folder_id)
+        # # Authenticate and upload to Google Drive
+        # service = authenticate_google_drive()
+        # folder_id = '1CcmHTorJysPzSj1ghEPjO2oOnRrK_BuI'  # Replace with your Google Drive folder ID
+        # file_name = f'captured_image_{datetime.now().strftime("%Y%m%d_%H%M%S")}.jpg'
+        # file_id = upload_to_drive(service, file_name, buffered, folder_id)
 
-        st.success(f"Image uploaded to Google Drive with file ID: {file_id}")
+        # st.success(f"Image uploaded to Google Drive with file ID: {file_id}")
 
         # Create a download button for the original image
         img_str = base64.b64encode(buffered.getvalue()).decode()
